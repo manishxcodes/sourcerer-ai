@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { usePathname } from "next/navigation"
+import { SignedIn, SignedOut, SignInButton, SignOutButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 
 // Menu items.
 const items = [
@@ -37,7 +38,7 @@ const items = [
 
 export function AppSidebar() {
     const path = usePathname();
-
+    const { user } = useUser();
 
     return (
         <Sidebar>
@@ -62,7 +63,20 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                <Button>Sign In</Button>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <Button>Sign In</Button>
+                </SignInButton>
+             </SignedOut>
+             <SignedIn>
+              <div className="flex py-2 px-2">
+                <UserButton />
+                <p className="ml-2">{user?.fullName}</p>
+              </div>
+              <SignOutButton>
+                <Button>Sign Out</Button>
+              </SignOutButton>
+             </SignedIn>
             </SidebarFooter>
         </Sidebar>
     )
