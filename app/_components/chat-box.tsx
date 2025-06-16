@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Cpu, SendHorizonal } from "lucide-react"
+import { Atom, Cpu, SearchCheck, SendHorizonal } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,20 +16,26 @@ export function ChatBox() {
         <div className="w-full px-16 md:px-16 lg:px-48">
             <div className="w-full border border-muted p-2  rounded-lg">
             <Tabs defaultValue="search" className="w-full">
-                <div>
+                <div className="h-8">
                     <TabsContent value="search">
-                        <input className="w-full rounded-md placeholder-gray-400 outline-none h-8" type="text" placeholder="Ask anything..." />
+                        <input className="w-full rounded-md placeholder-gray-400 outline-none" type="text" placeholder="Ask anything..." />
+                    </TabsContent>
+                    <TabsContent value="research">
+                        <input className="w-full rounded-md placeholder-gray-400 outline-none" type="text" placeholder="Research anything..." />
                     </TabsContent>
                 </div>
                 <div className="flex justify-between pt-8">
                     <div>
-                        <TabsContent value="research"><input className="w-full rounded-md placeholder-gray-400 outline-none h-8" type="text" placeholder="Research anything..." /></TabsContent>
                         <TabsList className="bg-gray-100 ">
-                            <TabsTrigger className="text-accent" value="search">Search</TabsTrigger>
-                            <TabsTrigger className="text-accent" value="research">Research</TabsTrigger>
+                            <TabsTrigger className="text-accent" value="search"> 
+                                <SearchCheck />Search
+                            </TabsTrigger>
+                            <TabsTrigger className="text-accent" value="research">
+                                <Atom />Research 
+                            </TabsTrigger>
                         </TabsList>
                     </div>
-                    <div className="flex gap-x-2">
+                    <div className="flex justify-center gap-x-2">
                         <DropdownMenu>
                             <DropdownMenuTrigger className="hover:bg-accent-foreground hover:text-primary hover:scale-105 transtion-all duration-100 pr-2" >
                                 <Cpu height={20} width={20} className="text-neutral-500"/>
