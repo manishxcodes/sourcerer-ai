@@ -11,4 +11,13 @@ export const userSchema = z.object({
 
 export type userData = z.infer<typeof userSchema>;
 
+export const searchQuerySchema = z.object({
+    id: z.string().uuid(),
+    searchInput: z.string().min(6),
+    userEmail: z.string().email(),
+    created_at: z.date(),
+    type: z.enum(["search","research"])
+})
+
+export type searchQueryData = z.infer<typeof searchQuerySchema>;
 
