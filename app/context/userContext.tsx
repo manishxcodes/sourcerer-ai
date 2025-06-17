@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
 import { userData } from "../types/database.types";
 
 type userContextType = {
@@ -10,3 +10,5 @@ export const userContext = createContext<userContextType>({
     userDetail: undefined,
     setUserDetail: () => {}
 });
+
+export const useUserContext = () => useContext(userContext);
