@@ -1,15 +1,33 @@
 import { NextRequest, NextResponse } from "next/server"
 import axios from 'axios'
+import { supabase } from "@/app/services/supabase";
 
 export async function POST(req: NextRequest) {
-    const {searchInput, searchType} = await req.json();
-    console.log("POST /api/search hit");
+    const {searchInput, searchType, library_id} = await req.json();
 
     if(!searchInput) {
         return NextResponse.json({message: "searchInput required"});
     }
 
     try {
+        const {data: existingSearchResult, error: fetchError} = await supabase
+        .from("Chats")
+        .select("*")
+        .eq("library_id", library_id)
+        .single();
+
+        if(fetchError) {
+            console.log("Something went wrong while checking existing search result")
+        }
+
+        console.log("mylibid", library_id);
+        console.log("db libid", existingSearchResult.library_id);
+
+        if(existingSearchResult) {
+            console.log("Search result already exist");
+            return NextResponse.json({data: existingSearchResult.search_result});
+        }
+
         const result = await axios.get(`${process.env.GOOGLE_SEARCH_API_ENDPOINT}?key=${process.env.GOOGLE_SEARCH_API_KEY}&cx=${process.env.GOOGLE_ENGINE_ID}&q=${searchInput}`);
 
         console.log(result.data)
@@ -26,6 +44,22 @@ export async function POST(req: NextRequest) {
                 cseImage: item.pagemap?.cse_image?.[0]?.src
             }
         ));
+
+        const {data, error: insertError} = await supabase
+        .from("Chats")
+        .insert([
+            {
+                library_id: library_id,
+                search_result: cleanedResponse
+            }
+        ]).select();
+
+        if(insertError) {
+            console.error("Error while saving user data", {detials: insertError});
+            return;
+        }
+
+        console.log("data saved db", data);
 
         return NextResponse.json({data: cleanedResponse});
     } catch(err) {
