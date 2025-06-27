@@ -5,14 +5,41 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { LucideImages, LucideList, LucideSparkles, LucideVideo } from "lucide-react";
 import AnswerPage from "./answer-page";
 import ImagesPage from "./images-page";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 interface DisplayResultProps {
     searchQueryData?: searchQueryData
 }
 
 export function DisplayResult({searchQueryData}: DisplayResultProps) {
-    const [activeTab, setActiveTab] = useState<tabType>("Answer")
+    const [activeTab, setActiveTab] = useState<tabType>("Answer");
+    const hasSearchedRef = useRef(false);
+
+    useEffect(() => {
+        if(searchQueryData && !hasSearchedRef.current) {
+            hasSearchedRef.current = true;
+            getSearchResult();
+        }
+        
+    }, [searchQueryData])
+    const getSearchResult = async() => {
+        console.log("called")
+        console.log("searchInput",searchQueryData?.searchInput)
+        try {
+            const result = await axios.post('/api/search', {
+                searchInput: searchQueryData?.searchInput, 
+                searchType: searchQueryData?.type,
+                library_id: searchQueryData?.id
+            });
+
+             console.log(result.data);
+            console.log(JSON.stringify(result.data));
+        } catch(err) {
+            console.log("error while getting serch result", {details: err});
+        }
+        
+    }
 
     return (
         <div className="w-full pt-16 px-8">
@@ -57,8 +84,8 @@ const tabs: Array<{label: tabType, icon: typeof LucideSparkles}> = [
     {label: "Source", icon: LucideList},
 ]
 
-// <script async src="https://cse.google.com/cse.js?cx=2232bf0465c634983">
+// <script async src="https://cse.google.com/cse.js?cx=">
 // </script>
 // <div class="gcse-search"></div>
 
-//AIzaSyAFW329Y3KAj1lWafmAovVjf62EaC3mjkk
+//
