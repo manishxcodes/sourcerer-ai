@@ -11,7 +11,7 @@ export default function SearchResultPage() {
     const {id} = useParams();
     const [loading, setLoading] = useState(false);
     const [searchQueryData, setSearchQueryData] = useState<searchQueryData>();
-    console.log(id);
+
     useEffect(() => {
         getSearchQueryData();
     }, [])
