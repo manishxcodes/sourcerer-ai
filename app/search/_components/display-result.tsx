@@ -1,20 +1,23 @@
 "use client"
 
-import { searchQueryData } from "@/app/types/database.types";
+import { searchQueryData, searchResponseArray } from "@/app/types/database.types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import { LucideImages, LucideList, LucideSparkles, LucideVideo } from "lucide-react";
+import { Loader, LucideImages, LucideList, LucideSparkles, LucideVideo } from "lucide-react";
 import AnswerPage from "./answer-page";
 import ImagesPage from "./images-page";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { useSearchResults } from "../../context/searchResultContext";
 
 interface DisplayResultProps {
-    searchQueryData?: searchQueryData
+    searchQueryData?: searchQueryData,
 }
 
 export function DisplayResult({searchQueryData}: DisplayResultProps) {
     const [activeTab, setActiveTab] = useState<tabType>("Answer");
     const hasSearchedRef = useRef(false);
+    const [searchResult, setSearchResult] = useState<searchResponseArray>([]);
+    const {setSearchResults, setIsLoading, isLoading} = useSearchResults();
 
     useEffect(() => {
         if(searchQueryData && !hasSearchedRef.current) {
@@ -27,19 +30,34 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
         console.log("called")
         console.log("searchInput",searchQueryData?.searchInput)
         try {
+            setIsLoading(true);
+            console.log('dispaly is loading, context')
             const result = await axios.post('/api/search', {
                 searchInput: searchQueryData?.searchInput, 
                 searchType: searchQueryData?.type,
                 library_id: searchQueryData?.id
             });
+            setSearchResult(result.data);
+            console.log(result.data);
+            // storing results data in context
+            setSearchResults({searchResults: result.data.data});
 
-             console.log(result.data);
-            console.log(JSON.stringify(result.data));
         } catch(err) {
             console.log("error while getting serch result", {details: err});
+        } finally {
+            setIsLoading(false);
         }
         
     }
+
+    // if(isLoading) {
+    //     return (
+    //         <div className="w-full h-screen flex flex-col justify-center items-center">
+    //             <Loader className="animate-spin" />
+    //             <h4 className="scroll-m-20 text-md font-semibold tracking-tight">Searching...</h4>
+    //         </div>
+    //     )
+    // }
 
     return (
         <div className="w-full pt-16 px-8">
