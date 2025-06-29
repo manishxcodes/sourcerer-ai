@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
         .from("Chats")
         .select("*")
         .eq("library_id", library_id)
+        .eq("search_query", searchInput)
         .single();
 
         if(fetchError) {
@@ -50,7 +51,8 @@ export async function POST(req: NextRequest) {
         .insert([
             {
                 library_id: library_id,
-                search_result: cleanedResponse
+                search_result: cleanedResponse,
+                search_query: searchInput
             }
         ]).select();
 
