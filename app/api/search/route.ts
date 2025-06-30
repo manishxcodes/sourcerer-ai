@@ -26,7 +26,9 @@ export async function POST(req: NextRequest) {
 
         if(existingSearchResult) {
             console.log("Search result already exist");
-            return NextResponse.json({data: existingSearchResult.search_result});
+            return NextResponse.json({data: existingSearchResult.search_result,
+                chatData: existingSearchResult.id
+            });
         }
 
         const result = await axios.get(`${process.env.GOOGLE_SEARCH_API_ENDPOINT}?key=${process.env.GOOGLE_SEARCH_API_KEY}&cx=${process.env.GOOGLE_ENGINE_ID}&q=${searchInput}`);
@@ -55,6 +57,7 @@ export async function POST(req: NextRequest) {
                 search_query: searchInput
             }
         ]).select();
+        console.log("chat:", data);
 
         if(insertError) {
             console.error("Error while saving user data", {detials: insertError});
@@ -63,7 +66,10 @@ export async function POST(req: NextRequest) {
 
         console.log("data saved db", data);
 
-        return NextResponse.json({data: cleanedResponse});
+        return NextResponse.json({
+            data: cleanedResponse,
+            chatData: data?.[0]?.id
+        });
     } catch(err) {
         console.log("error whle fetching answer");
         return NextResponse.json({message: "Something went wrong while fetching answer", details: err});
