@@ -24,27 +24,19 @@ export const llmModel = inngest.createFunction(
                 body: {
                     contents: [
                         {
-                            role: 'system',
                             parts: [{
-                                text: `You are a helpful research assistant.
+                                text: `Using the user input below, summarize and search for the main topic. Return output in well-formatted markdown. User input is: ${event.data.searchInput}
 
-                                The user searched for: "${event.data.searchInput}"
+                                Here are some related search results:
+                                ${JSON.stringify(event.data.searchResult)}
 
-                                Below is a list of search result summaries. Your task:
-                                - Analyze the content and summarize the topic.
-                                - Output a clean and accurate explanation in well-formatted **Markdown**.
-                                - Use headings, bullet points, and links where appropriate.
-                                - Include a short **TL;DR** at the top.
-
-                                Respond ONLY with the final Markdown summary.
-
-                                Search Results:
-                                ${JSON.stringify(event.data.searchResult, null, 2)}`
-                            }]
-                        }, {
-                            role: "user",
-                            parts: [{
-                                text: JSON.stringify(event.data.searchResult)
+                                Summarize the topic and return a properly formatted Markdown article with:
+                                - A title
+                                - Subheadings like "Overview", "Key Features"
+                                - Bullet points
+                                - Links (if available)
+                                - Avoid repetition.
+                                `
                             }]
                         }
                     ]
@@ -70,6 +62,8 @@ export const llmModel = inngest.createFunction(
             if(updateError) {
                 console.log("error whle updating aireponse", {details: updateError});
             }
+
+            console.log("markdownText: ",markdownText);
 
             return data;
         })
