@@ -5,7 +5,8 @@ import { searchQueryData } from "@/app/types/database.types";
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react";
 import { DisplayResult } from "../_components/display-result";
-import { Loader } from "lucide-react";
+import { Loader, Search } from "lucide-react";
+import { SearchResultsProvider, useSearchResults } from "@/app/context/searchResultContext";
 
 export default function SearchResultPage() {
     const {id} = useParams();
@@ -39,18 +40,20 @@ export default function SearchResultPage() {
         }
     }
 
-    if(loading) {
-        return (
-            <div className="w-full h-screen flex flex-col justify-center items-center">
-                <Loader className="animate-spin" />
-                <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">Loading...</h3>
-            </div>
-        )
-    }
+    // if(loading ) {
+    //     return (
+    //         <div className="w-full h-screen flex flex-col justify-center items-center">
+    //             <Loader className="animate-spin" />
+    //             <h3 className="scroll-m-20 text-md font-semibold tracking-tight">Loading...</h3>
+    //         </div>
+    //     )
+    // }
 
     return (
-        <div className="w-full h-screen flex pr-6">
-            <DisplayResult searchQueryData={searchQueryData} />
-        </div>
+        <SearchResultsProvider>
+            <div className="w-full h-screen flex pr-6">
+                <DisplayResult searchQueryData={searchQueryData} />
+            </div>
+        </SearchResultsProvider>
     )
 }
