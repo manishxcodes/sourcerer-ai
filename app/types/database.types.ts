@@ -21,3 +21,18 @@ export const searchQuerySchema = z.object({
 
 export type searchQueryData = z.infer<typeof searchQuerySchema>;
 
+
+export const searchResponseSchema = z.object({
+  title: z.string(),
+  snippet: z.string(),
+  link: z.string().url(),
+  displayLink: z.string(),
+  ogImage: z.string().url().optional().nullable(),
+  cseImage: z.string().url().optional().nullable(),
+});
+
+export type searchResponseType = z.infer<typeof searchResponseSchema>;
+
+export const searchResponseSchemaArray = z.array(searchResponseSchema);
+
+export type searchResponseArray = z.infer<typeof searchResponseSchemaArray>;
