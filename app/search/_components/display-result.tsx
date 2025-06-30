@@ -8,6 +8,8 @@ import ImagesPage from "./images-page";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useSearchResults } from "../../context/searchResultContext";
+import { supabase } from "@/app/services/supabase";
+import { LinksPage } from "./links-page";
 
 interface DisplayResultProps {
     searchQueryData?: searchQueryData,
@@ -18,6 +20,7 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
     const hasSearchedRef = useRef(false);
     const [searchResult, setSearchResult] = useState<searchResponseArray>([]);
     const {setSearchResults, setIsLoading, isLoading} = useSearchResults();
+    const [aiMarkdownResponse, setAiMarkdownResponse] = useState();
 
     useEffect(() => {
         if(searchQueryData && !hasSearchedRef.current) {
@@ -26,6 +29,7 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
         }
         
     }, [searchQueryData])
+
     const getSearchResult = async() => {
         console.log("called")
         console.log("searchInput",searchQueryData?.searchInput)
@@ -38,16 +42,55 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
                 library_id: searchQueryData?.id
             });
             setSearchResult(result.data);
-            console.log(result.data);
+            console.log("chat: ", result.data.chatData)
+            console.log("reslt: ",result.data.data);
             // storing results data in context
             setSearchResults({searchResults: result.data.data});
+
+            // pass to llm
+            await generateAiResponse(result.data.data, result.data.chatData)
 
         } catch(err) {
             console.log("error while getting serch result", {details: err});
         } finally {
             setIsLoading(false);
-        }
-        
+        }   
+    }
+
+    const generateAiResponse = async(formattedSearchResult: searchResponseArray, chatId: string) => {
+        const result = await axios.post('/api/llm-model', {
+            searchInput: searchQueryData?.searchInput,
+            searchResult: formattedSearchResult,
+            chatId: chatId 
+        })
+
+        const runId = result.data;
+
+        const interval = setInterval(async ()=> {
+            const runResponse = await axios.post('/api/get-inngest-status',{runId: runId});
+            console.log(runResponse.data);
+
+            if(runResponse.data.data[0].status == "Completed") {
+                clearInterval(interval);
+                console.log("completed");
+
+            // get updated data from db
+                const {data: aiResponseMarkdown, error: fetchError} = await supabase
+                .from("Chats")
+                .select("ai_response")
+                .eq('id', chatId);
+
+                if(fetchError) {
+                    console.log('something went wrong', {details: fetchError});
+                    // taosst error
+                }
+
+                setAiMarkdownResponse(aiResponseMarkdown?.[0].ai_response)
+            }
+        }, 1000)
+
+
+
     }
 
     // if(isLoading) {
@@ -77,28 +120,24 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
                     ))}
                 </TabsList>
                 <TabsContent value="Answer">
-                    <AnswerPage />
+                    <AnswerPage value={aiMarkdownResponse} />
                 </TabsContent>
                 <TabsContent value="Images">
                     <ImagesPage />
                 </TabsContent>
-                <TabsContent value="Videos">
-
-                </TabsContent>
                 <TabsContent value="Source">
-
+                    <LinksPage />
                 </TabsContent>
             </Tabs>
         </div>
     )
 }
 
-type tabType = "Answer" | "Images" | "Videos" | "Source";
+type tabType = "Answer" | "Images" | "Source";
 
 const tabs: Array<{label: tabType, icon: typeof LucideSparkles}> = [
     {label: "Answer", icon: LucideSparkles},
     {label: "Images", icon: LucideImages},
-    {label: "Videos", icon: LucideVideo},
     {label: "Source", icon: LucideList},
 ]
 
