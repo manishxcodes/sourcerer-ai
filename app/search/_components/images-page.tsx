@@ -1,21 +1,29 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Link, Plus } from "lucide-react";
 import { useSearchResults } from "../../context/searchResultContext";
+import { LoadingScreen } from "./Loader";
+import { ErrorCard } from "./error-card";
 
 export default function ImagesPage() {
     const { searchResults, isLoading} = useSearchResults();
 
-    if(!searchResults?.searchResults ) {
+    if(isLoading) {
+        console.log("isiloaidng ans page")
         return (
-            <div>
-                Loading
-            </div>
+            <LoadingScreen />
+        )
+    }
+
+    if(!searchResults?.searchResults && isLoading) {
+        console.log("no asnwer anserpg")
+        return (
+            <ErrorCard />
         )
     }
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-4 py-6">
             {
-                searchResults.searchResults.map((result, index) => {
+                searchResults && searchResults.searchResults.map((result, index) => {
                     const imageUrl = result.ogImage || result.cseImage || "";
                     if(!imageUrl) return null;
 
