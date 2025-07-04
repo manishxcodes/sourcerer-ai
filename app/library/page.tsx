@@ -2,23 +2,27 @@
 
 import { useEffect, useState } from "react"
 import { supabase } from "../services/supabase";
-import { useUser } from "@clerk/nextjs";
 import { useUserContext } from "../context/userContext";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export default function Library() {
     const [previousChat, setPreviousChat] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<PostgrestError>();
     const { userDetail } = useUserContext();
     const emailAddress = userDetail?.email;
+
     useEffect(() => {
         if(emailAddress) {
+            console.log("go email")
             getPrevChats();
         }
         
-    }, []);
+    }, [emailAddress]);
 
     const getPrevChats = async () => {
         try {
+            setLoading(true);
             const {data: chat, error: chatError} = await supabase
             .from('Library')
             .select('*')
@@ -29,22 +33,12 @@ export default function Library() {
                 setPreviousChat(chat);
             }
 
+
             if(chatError) {
                 console.log("chat error");
-                return (
-                    <div className="w-full flex items-center justify-center h-full">
-                        <h2>Something went wrong try again</h2>
-                    </div>
-                )
+                setError(chatError);
             }
 
-            if(chat.length === 0) {
-                return (
-                    <div className="w-full flex items-center justify-center h-full">
-                        <h2>No chat records</h2>
-                    </div>
-                )
-            }
         } catch(err) {
             console.log("something went wrong. try again");
         } finally {
@@ -52,6 +46,30 @@ export default function Library() {
         }
 
     }
+
+        if(loading) {
+            return (
+                <div>
+                    loading
+                </div>
+            )
+        }
+
+        if(error) {
+            return (
+                <div className="w-full flex items-center justify-center h-full">
+                    <h2>Something went wrong try again</h2>
+                </div>
+            )
+        }
+
+        if(previousChat.length === 0) {
+            return (
+                <div className="w-full flex items-center justify-center h-full">
+                    <h2>No chat records</h2>
+                </div>
+            )
+        }
 
     return (
         <div className="w-full h-full">
@@ -72,9 +90,9 @@ export default function Library() {
                         });
 
                         return (
-                            <div key={index} className=" cursor-pointer flex justify-between mb-2">
+                            <div key={index} className=" cursor-pointer flex items-center mb-2 gap-x-4">
                                 <p className="hover:underline">{chat.searchInput}</p>  
-                                <p className="text-muted text-sm">{`${datePart}, ${timePart}`}</p>
+                                <p className="text-neutral-500 text-[12px]">{`${datePart}, ${timePart}`}</p>
                             </div>
                         )
                     })
