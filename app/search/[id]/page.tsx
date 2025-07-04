@@ -7,12 +7,15 @@ import { useEffect, useState } from "react";
 import { DisplayResult } from "../_components/display-result";
 import { Loader, Search } from "lucide-react";
 import { SearchResultsProvider, useSearchResults } from "@/app/context/searchResultContext";
+import { PostgrestError } from "@supabase/supabase-js";
+import { ErrorCard } from "../_components/error-card";
 
 export default function SearchResultPage() {
     const {id} = useParams();
     const [loading, setLoading] = useState(false);
     const [searchQueryData, setSearchQueryData] = useState<searchQueryData>();
-
+    const [error, setError] = useState<PostgrestError>()
+    
     useEffect(() => {
         getSearchQueryData();
     }, [])
@@ -27,6 +30,7 @@ export default function SearchResultPage() {
 
             if(selectError) {
                 console.log("Error while fetching searchQuery", {details: selectError});
+                setError(selectError);
             }
 
             if(searchQuery && searchQuery?.length > 0) {
@@ -40,14 +44,13 @@ export default function SearchResultPage() {
         }
     }
 
-    // if(loading ) {
-    //     return (
-    //         <div className="w-full h-screen flex flex-col justify-center items-center">
-    //             <Loader className="animate-spin" />
-    //             <h3 className="scroll-m-20 text-md font-semibold tracking-tight">Loading...</h3>
-    //         </div>
-    //     )
-    // }
+    if(error) {
+        return (
+            <div className="w-full h-full flex items-center justify-center">
+                <ErrorCard />
+            </div>
+        )
+    }
 
     return (
         <SearchResultsProvider>
