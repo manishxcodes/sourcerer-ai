@@ -1,4 +1,4 @@
-import { ArrowUpRight, Link, Plus } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useSearchResults } from "../../context/searchResultContext";
 import { LoadingScreen } from "./Loader";
 import { ErrorCard } from "./error-card";

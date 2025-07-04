@@ -5,8 +5,7 @@ import { searchQueryData } from "@/app/types/database.types";
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react";
 import { DisplayResult } from "../_components/display-result";
-import { Loader, Search } from "lucide-react";
-import { SearchResultsProvider, useSearchResults } from "@/app/context/searchResultContext";
+import { SearchResultsProvider } from "@/app/context/searchResultContext";
 import { PostgrestError } from "@supabase/supabase-js";
 import { ErrorCard } from "../_components/error-card";
 

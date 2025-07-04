@@ -2,7 +2,7 @@
 
 import { searchQueryData, searchResponseArray } from "@/app/types/database.types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import { Loader, LucideImages, LucideList, LucideSparkles, LucideVideo } from "lucide-react";
+import { LucideImages, LucideList, LucideSparkles } from "lucide-react";
 import AnswerPage from "./answer-page";
 import ImagesPage from "./images-page";
 import { useEffect, useRef, useState } from "react";
