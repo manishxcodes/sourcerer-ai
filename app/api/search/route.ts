@@ -15,19 +15,13 @@ export async function POST(req: NextRequest) {
         .select("*")
         .eq("library_id", library_id)
         .eq("search_query", searchInput)
-        .single();
-
-        if(fetchError) {
-            console.log("Something went wrong while checking existing search result")
-        }
-
-        console.log("mylibid", library_id);
-        console.log("db libid", existingSearchResult.library_id);
+        .maybeSingle();
 
         if(existingSearchResult) {
             console.log("Search result already exist");
             return NextResponse.json({data: existingSearchResult.search_result,
-                chatData: existingSearchResult.id
+                chatId: existingSearchResult.id,
+                ai_response: existingSearchResult.ai_response
             });
         }
 
@@ -47,6 +41,7 @@ export async function POST(req: NextRequest) {
                 cseImage: item.pagemap?.cse_image?.[0]?.src
             }
         ));
+        console.log("insertion start");
 
         const {data, error: insertError} = await supabase
         .from("Chats")
@@ -56,13 +51,17 @@ export async function POST(req: NextRequest) {
                 search_result: cleanedResponse,
                 search_query: searchInput
             }
-        ]).select();
+        ]).select("*");
+        console.log("inserton end")
         console.log("chat:", data);
 
-        if(insertError) {
-            console.error("Error while saving user data", {detials: insertError});
-            return;
+        if (insertError) {
+            return NextResponse.json({
+                message: "Error while saving to database",
+                details: insertError.message,
+            }, { status: 500 });
         }
+
 
         console.log("data saved db", data);
 
@@ -71,7 +70,7 @@ export async function POST(req: NextRequest) {
             chatData: data?.[0]?.id
         });
     } catch(err) {
-        console.log("error whle fetching answer");
+        console.log("error whle fetching answer++++++++++++++++++++++++++++++++++++++++++++++++++++++==",{details: err});
         return NextResponse.json({message: "Something went wrong while fetching answer", details: err});
     }
 }
