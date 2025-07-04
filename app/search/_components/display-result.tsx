@@ -10,6 +10,7 @@ import axios from "axios";
 import { useSearchResults } from "../../context/searchResultContext";
 import { supabase } from "@/app/services/supabase";
 import { LinksPage } from "./links-page";
+import { LoadingScreen } from "./Loader";
 
 interface DisplayResultProps {
     searchQueryData?: searchQueryData,
@@ -18,7 +19,6 @@ interface DisplayResultProps {
 export function DisplayResult({searchQueryData}: DisplayResultProps) {
     const [activeTab, setActiveTab] = useState<tabType>("Answer");
     const hasSearchedRef = useRef(false);
-    const [searchResult, setSearchResult] = useState<searchResponseArray>([]);
     const {setSearchResults, setIsLoading, isLoading} = useSearchResults();
     const [aiMarkdownResponse, setAiMarkdownResponse] = useState();
 
@@ -41,14 +41,20 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
                 searchType: searchQueryData?.type,
                 library_id: searchQueryData?.id
             });
-            setSearchResult(result.data);
-            console.log("chat: ", result.data.chatData)
-            console.log("reslt: ",result.data.data);
+            console.log("chat: ", result.data.chatId)
+            console.log("reslt: ",result.data);
+            console.log("airspon", result.data.ai_response);
             // storing results data in context
             setSearchResults({searchResults: result.data.data});
 
-            // pass to llm
-            await generateAiResponse(result.data.data, result.data.chatData)
+            if(result.data.ai_response)  {
+                setAiMarkdownResponse(result.data.ai_response);
+            } else {
+                // pass to llm
+                await generateAiResponse(result.data.data, result.data.chatData)
+            }
+
+
 
         } catch(err) {
             console.log("error while getting serch result", {details: err});
@@ -90,17 +96,13 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
         }, 1000)
 
 
-
     }
 
-    // if(isLoading) {
-    //     return (
-    //         <div className="w-full h-screen flex flex-col justify-center items-center">
-    //             <Loader className="animate-spin" />
-    //             <h4 className="scroll-m-20 text-md font-semibold tracking-tight">Searching...</h4>
-    //         </div>
-    //     )
-    // }
+    if(isLoading) {
+        return (
+            <LoadingScreen />
+        )
+    }
 
     return (
         <div className="w-full pt-16 px-8">
@@ -120,7 +122,7 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
                     ))}
                 </TabsList>
                 <TabsContent value="Answer">
-                    <AnswerPage value={aiMarkdownResponse} />
+                    <AnswerPage value={aiMarkdownResponse}/>
                 </TabsContent>
                 <TabsContent value="Images">
                     <ImagesPage />
@@ -140,9 +142,3 @@ const tabs: Array<{label: tabType, icon: typeof LucideSparkles}> = [
     {label: "Images", icon: LucideImages},
     {label: "Source", icon: LucideList},
 ]
-
-// <script async src="https://cse.google.com/cse.js?cx=">
-// </script>
-// <div class="gcse-search"></div>
-
-//
