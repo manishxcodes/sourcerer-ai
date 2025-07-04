@@ -1,21 +1,30 @@
 import { useSearchResults } from "../../context/searchResultContext";
 import ReactMarkDown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import SyntaxHighlighter, { SyntaxHighlighterProps } from "react-syntax-highlighter"
+import SyntaxHighlighter from "react-syntax-highlighter"
 import { okaidia } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { LoadingScreen } from "./Loader";
+import { ErrorCard } from "./error-card";
 
+
+// @ts-ignore
 export default function AnswerPage({value}: {value: string | undefined}) {
     const {searchResults, isLoading} = useSearchResults();
 
-
-    if(!searchResults?.searchResults || !value) {
+    if(isLoading) {
+        console.log("isiloaidng ans page")
         return (
-            <div>
-                Loading asnwer
-            </div>
+            <LoadingScreen />
+        )
+    }
+
+    if((!searchResults?.searchResults || !value) && isLoading) {
+        console.log("no asnwer anserpg")
+        return (
+            <ErrorCard />
         )
     }
 
@@ -24,7 +33,7 @@ export default function AnswerPage({value}: {value: string | undefined}) {
             <div className="w-full flex pb-4">
                 <div className="md:flex hidden  gap-2 pt-2 ">
                 {
-                    searchResults.searchResults.slice(0,4).map((result) => (
+                    searchResults && value && searchResults.searchResults.slice(0,4).map((result) => (
                         <div key={result.title} className="px-2 py-1 bg-neutral-100 rounded-md flex cursor-pointer hover:bg-neutral-50 transition-all duration-150">
                             <a href={result.link} target="blank">
                             <p className="text-neutral-500 text-[10px]">{result.displayLink}</p>
@@ -39,7 +48,8 @@ export default function AnswerPage({value}: {value: string | undefined}) {
                 </div>
             </div>
             <div className="prose max-w-4xl">
-                <ReactMarkDown
+                { value ?
+                    <ReactMarkDown
                     remarkPlugins={[remarkGfm]}
                     components={{
                     h1: ({ node, ...props }) => (
@@ -98,7 +108,9 @@ export default function AnswerPage({value}: {value: string | undefined}) {
                     }}
                 >
                     {value}
-                </ReactMarkDown>
+                    </ReactMarkDown>
+                    : <LoadingScreen />
+                }
             </div>
             <Link href={'/'} >
                 <Button className=" flex items-center fixed bottom-10 right-10 "> 
