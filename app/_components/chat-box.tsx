@@ -61,11 +61,11 @@ export function ChatBox() {
                     <div>
                         <TabsList className="bg-gray-100 ">
                             <TabsTrigger className="text-accent" value="search"
-                                onClick={(e) => {setSearchType("search")}}> 
+                                onClick={() => {setSearchType("search")}}> 
                                 <SearchCheck />Search
                             </TabsTrigger>
                             <TabsTrigger className="text-accent" value="research"
-                                onClick={(e) => {setSearchType("research")}}>
+                                onClick={() => {setSearchType("research")}}>
                                 <Atom />Research 
                             </TabsTrigger>
                         </TabsList>
