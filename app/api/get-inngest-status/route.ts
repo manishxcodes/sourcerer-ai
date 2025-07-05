@@ -11,9 +11,9 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const result = await axios.get(`http://localhost:8288/v1/events/${runId}/runs`, {
+        const result = await axios.get(`https://api.inngest.com/v1/events/${runId}/runs`, {
         headers: {
-        Authorization: `Bearer ${process.env.INNGEST_SIGNING_KEY}`,
+            Authorization: `Bearer ${process.env.INNGEST_SIGNING_KEY}`,
         },
     });
 
