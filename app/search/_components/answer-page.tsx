@@ -88,9 +88,9 @@ export default function AnswerPage({value}: {value: string | undefined}) {
                     td: ({ node, ...props }) => (
                         <td className="border border-gray-300 px-4 py-2" {...props} />
                     ),
-                    code: ({ node, inline, className, children, ...props }) => {
+                    code: ({ node,  className, children, ...props }) => {
                         const match = /language-(\w+)/.exec(className || "");
-                        return !inline && match ? (
+                        return  match ? (
                         <SyntaxHighlighter
                             style={okaidia}
                             language={match[1]}
