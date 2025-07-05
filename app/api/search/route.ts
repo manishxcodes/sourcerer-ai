@@ -3,7 +3,7 @@ import axios from 'axios'
 import { supabase } from "@/app/services/supabase";
 
 export async function POST(req: NextRequest) {
-    const {searchInput, searchType, library_id} = await req.json();
+    const {searchInput, library_id} = await req.json();
 
     if(!searchInput) {
         return NextResponse.json({message: "searchInput required"});
@@ -25,9 +25,11 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const result = await axios.get(`${process.env.GOOGLE_SEARCH_API_ENDPOINT}?key=${process.env.GOOGLE_SEARCH_API_KEY}&cx=${process.env.GOOGLE_ENGINE_ID}&q=${searchInput}`);
+        if(fetchError) {
+            return NextResponse.json({message: 'Error, something went wrong', details: fetchError})
+        }
 
-        console.log(result.data)
+        const result = await axios.get(`${process.env.GOOGLE_SEARCH_API_ENDPOINT}?key=${process.env.GOOGLE_SEARCH_API_KEY}&cx=${process.env.GOOGLE_ENGINE_ID}&q=${searchInput}`);
 
         const items = result.data.items || [];
         

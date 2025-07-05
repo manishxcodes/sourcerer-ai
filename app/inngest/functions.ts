@@ -52,7 +52,7 @@ export const llmModel = inngest.createFunction(
         }
 
         // save airesponse in db/chats
-        const saveResponse = await step.run('saveResponse', async() => {
+        await step.run('saveResponse', async() => {
             const { data, error: updateError} = await supabase
             .from('Chats')
             .update({ai_response: markdownText})
