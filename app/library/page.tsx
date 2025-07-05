@@ -63,7 +63,7 @@ export default function Library() {
             )
         }
 
-        if(previousChat.length === 0) {
+        if(previousChat.length === 0 && !loading) {
             return (
                 <div className="w-full flex items-center justify-center h-full">
                     <h2>No chat records</h2>
@@ -90,10 +90,12 @@ export default function Library() {
                         });
 
                         return (
-                            <div key={index} className=" cursor-pointer flex items-center mb-2 gap-x-4">
+                            <a key={index}  href={`/search/${chat.id}`}>
+                            <div className=" cursor-pointer flex items-center mb-2 gap-x-4">
                                 <p className="hover:underline">{chat.searchInput}</p>  
                                 <p className="text-neutral-500 text-[12px]">{`${datePart}, ${timePart}`}</p>
                             </div>
+                            </a>
                         )
                     })
                 }
