@@ -50,7 +50,7 @@ export function AppSidebar() {
                     <SidebarMenu>
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title} >
-                        <SidebarMenuButton asChild className={`hover:bg-transparent hover:text-accent hover:scale-105 transition-transform duration-150 ${path?.includes(item.url) && 'font-semibold text-primary' }`}>
+                        <SidebarMenuButton asChild className={`hover:bg-transparent hover:text-accent hover:scale-105 transition-transform duration-150 ${path === item.url && 'font-semibold text-primary' }`}>
                             <a href={item.url}>
                             <item.icon />
                             <span>{item.title}</span>
