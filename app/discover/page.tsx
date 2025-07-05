@@ -3,6 +3,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react";
 import { searchResponseArray } from "../types/database.types";
+import { LoadingScreen } from "../search/_components/Loader";
 
 export default function DiscoverPage() {
     const [news, setNews] = useState<searchResponseArray>([]);
@@ -29,15 +30,15 @@ export default function DiscoverPage() {
         console.log("isiloaidng ans page")
         return (
             <div>
-                Loaidng ans
+                 <LoadingScreen />
             </div>
         )
     }
 
     if(!news) {
         return (
-            <div>
-                Somethhing went wrong. try again/refresh
+            <div className="w-full h-full flex items-center  justify-center">
+                <h2>Somethhing went wrong. try again/refresh</h2>
             </div>
         )  
     }
