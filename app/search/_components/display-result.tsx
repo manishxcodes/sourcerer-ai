@@ -31,19 +31,19 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
     }, [searchQueryData])
 
     const getSearchResult = async() => {
-        //console.log("called")
-        //console.log("searchInput",searchQueryData?.searchInput)
+        console.log("called")
+        console.log("searchInput",searchQueryData?.searchInput)
         try {
             setIsLoading(true);
-            //console.log('dispaly is loading, context')
+            console.log('dispaly is loading, context')
             const result = await axios.post('/api/search', {
                 searchInput: searchQueryData?.searchInput, 
                 searchType: searchQueryData?.type,
                 library_id: searchQueryData?.id
             });
-            //console.log("chat: ", result.data.chatId)
-            //console.log("reslt: ",result.data);
-            //console.log("airspon", result.data.ai_response);
+            console.log("chat: ", result.data.chatId)
+            console.log("reslt: ",result.data);
+            console.log("airspon", result.data.ai_response);
             // storing results data in context
             setSearchResults({searchResults: result.data.data});
 
@@ -57,7 +57,7 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
 
 
         } catch(err) {
-            //console.log("error while getting serch result", {details: err});
+            console.log("error while getting serch result", {details: err});
         } finally {
             setIsLoading(false);
         }   
@@ -74,11 +74,12 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
 
         const interval = setInterval(async ()=> {
             const runResponse = await axios.post('/api/get-inngest-status',{runId: runId});
-            //console.log(runResponse.data);
+            console.log(runResponse.data);
 
-            if(runResponse?.data?.data?.[0]?.status === "Completed") {
+            if(runResponse?.data?.data?.[0]?.status === "Completed"
+) {
                 clearInterval(interval);
-                //console.log("completed");
+                console.log("completed");
 
             // get updated data from db
                 const {data: aiResponseMarkdown, error: fetchError} = await supabase
@@ -87,7 +88,7 @@ export function DisplayResult({searchQueryData}: DisplayResultProps) {
                 .eq('id', chatId);
 
                 if(fetchError) {
-                    //console.log('something went wrong', {details: fetchError});
+                    console.log('something went wrong', {details: fetchError});
                     // taosst error
                 }
 
