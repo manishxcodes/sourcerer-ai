@@ -60,10 +60,10 @@ export const llmModel = inngest.createFunction(
             .select();
 
             if(updateError) {
-                console.log("error whle updating aireponse", {details: updateError});
+                //console.log("error whle updating aireponse", {details: updateError});
             }
 
-            console.log("markdownText: ",markdownText);
+            //console.log("markdownText: ",markdownText);
 
             return data;
         })

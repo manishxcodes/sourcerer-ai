@@ -15,14 +15,14 @@ export default function AnswerPage({value}: {value: string | undefined}) {
     const {searchResults, isLoading} = useSearchResults();
 
     if(isLoading) {
-        console.log("isiloaidng ans page")
+        //console.log("isiloaidng ans page")
         return (
             <LoadingScreen />
         )
     }
 
     if((!searchResults?.searchResults || !value) && isLoading) {
-        console.log("no asnwer anserpg")
+        //console.log("no asnwer anserpg")
         return (
             <ErrorCard />
         )

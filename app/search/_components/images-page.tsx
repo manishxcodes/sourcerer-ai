@@ -7,14 +7,14 @@ export default function ImagesPage() {
     const { searchResults, isLoading} = useSearchResults();
 
     if(isLoading) {
-        console.log("isiloaidng ans page")
+        //console.log("isiloaidng ans page")
         return (
             <LoadingScreen />
         )
     }
 
     if(!searchResults?.searchResults && isLoading) {
-        console.log("no asnwer anserpg")
+        //console.log("no asnwer anserpg")
         return (
             <ErrorCard />
         )

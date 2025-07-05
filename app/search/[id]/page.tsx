@@ -28,16 +28,16 @@ export default function SearchResultPage() {
                 .eq('id', id);
 
             if(selectError) {
-                console.log("Error while fetching searchQuery", {details: selectError});
+                //console.log("Error while fetching searchQuery", {details: selectError});
                 setError(selectError);
             }
 
             if(searchQuery && searchQuery?.length > 0) {
-                console.log("searchQuery: ",searchQuery[0])
+                //console.log("searchQuery: ",searchQuery[0])
                 setSearchQueryData(searchQuery[0]);
             }
         } catch(err) {
-            console.error("Something went wrong", {details: err});
+            //console.error("Something went wrong", {details: err});
         } finally {
             setLoading(false);
         }

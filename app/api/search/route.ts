@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
         .maybeSingle();
 
         if(existingSearchResult) {
-            console.log("Search result already exist");
+            //console.log("Search result already exist");
             return NextResponse.json({data: existingSearchResult.search_result,
                 chatId: existingSearchResult.id,
                 ai_response: existingSearchResult.ai_response
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
                 cseImage: item.pagemap?.cse_image?.[0]?.src
             }
         ));
-        console.log("insertion start");
+        //console.log("insertion start");
 
         const {data, error: insertError} = await supabase
         .from("Chats")
@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
                 search_query: searchInput
             }
         ]).select("*");
-        console.log("inserton end")
-        console.log("chat:", data);
+        //console.log("inserton end")
+        //console.log("chat:", data);
 
         if (insertError) {
             return NextResponse.json({
@@ -65,14 +65,14 @@ export async function POST(req: NextRequest) {
         }
 
 
-        console.log("data saved db", data);
+        //console.log("data saved db", data);
 
         return NextResponse.json({
             data: cleanedResponse,
             chatData: data?.[0]?.id
         });
     } catch(err) {
-        console.log("error whle fetching answer++++++++++++++++++++++++++++++++++++++++++++++++++++++==",{details: err});
+        //console.log("error whle fetching answer++++++++++++++++++++++++++++++++++++++++++++++++++++++==",{details: err});
         return NextResponse.json({message: "Something went wrong while fetching answer", details: err});
     }
 }
@@ -99,7 +99,7 @@ export async function GET() {
 
         return NextResponse.json(cleanedResponse);
     } catch(err) {
-        console.log('Error while fetching news', {details: err});
+        //console.log('Error while fetching news', {details: err});
         return NextResponse.json({message: "error whilre fetching news", details: err});
 
     }

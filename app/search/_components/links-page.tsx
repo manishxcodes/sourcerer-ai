@@ -8,20 +8,20 @@ export function LinksPage() {
     const { searchResults, isLoading} = useSearchResults();
 
     if(isLoading) {
-        console.log("isiloaidng ans page")
+        //console.log("isiloaidng ans page")
         return (
             <LoadingScreen />
         )
     }
 
     if((!searchResults?.searchResults ) && isLoading) {
-        console.log("no asnwer anserpg")
+        //console.log("no asnwer anserpg")
         return (
             <ErrorCard />
         )
     }
 
-    console.log(searchResults);
+    //console.log(searchResults);
 
     return (
         <div className="w-full h-full flex-col flex gap-y-2 tracking-wide mt-2">

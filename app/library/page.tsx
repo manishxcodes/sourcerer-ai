@@ -14,7 +14,7 @@ export default function Library() {
 
     useEffect(() => {
         if(emailAddress) {
-            console.log("go email")
+            //console.log("go email")
             getPrevChats();
         }
         
@@ -29,18 +29,18 @@ export default function Library() {
             .eq('userEmail', emailAddress)
 
             if(chat) {
-                console.log("chat: ", chat);
+                //console.log("chat: ", chat);
                 setPreviousChat(chat);
             }
 
 
             if(chatError) {
-                console.log("chat error");
+                //console.log("chat error");
                 setError(chatError);
             }
 
         } catch(err) {
-            console.log("something went wrong. try again");
+            //console.log("something went wrong. try again");
         } finally {
             setLoading(false);
         }

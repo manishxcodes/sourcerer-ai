@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(result.data);
     } catch(err) {
-        console.log("error: while gettng inngest status", {details: err});
+        //console.log("error: while gettng inngest status", {details: err});
         return NextResponse.json({error: "while gettng inngest status", details: err})
     }
 

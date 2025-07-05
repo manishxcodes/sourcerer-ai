@@ -25,12 +25,12 @@ export default function Provider({ children }: {children: React.ReactNode}) {
             .eq('email', user.primaryEmailAddress.emailAddress);
 
             if(err) {
-                console.error("Error while checking for existing user", {details: err});
+                //console.error("Error while checking for existing user", {details: err});
                 return;
             }
 
-            console.log("user: ", user);
-            console.log("supabase-user: ", existingUser);
+            //console.log("user: ", user);
+            //console.log("supabase-user: ", existingUser);
 
             // if user doesnot exist
             if(existingUser?.length === 0) {
@@ -43,17 +43,17 @@ export default function Provider({ children }: {children: React.ReactNode}) {
                 .select();
 
                 if(insertError) {
-                    console.error("Error while saving user data", {detials: insertError});
+                    //console.error("Error while saving user data", {detials: insertError});
                     return;
                 }
 
-                console.log("user created", data);
+                //console.log("user created", data);
                 setUserDetail(data[0]);
             }
             setUserDetail(existingUser[0]);
 
         } catch(err) {
-            console.error("something went wrong", {details: err});
+            //console.error("something went wrong", {details: err});
         } finally {
             setIsLoading(false);
         }
